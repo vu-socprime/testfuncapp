@@ -4,7 +4,7 @@
   "parameters": {
     "functionAppName": {
       "type": "string",
-      "defaultValue": "[format('func-{0}', uniqueString(resourceGroup().id))]",
+      "defaultValue": "",
       "metadata": {
         "description": "The name of the Azure Function app."
       }
@@ -37,7 +37,7 @@
     },
     "functionWorkerRuntime": {
       "type": "string",
-      "defaultValue": "node",
+      "defaultValue": "python",
       "allowedValues": [
         "dotnet",
         "node",
@@ -50,15 +50,23 @@
     },
     "linuxFxVersion": {
       "type": "string",
+      "defaultValue": "python|3.9",
       "metadata": {
         "description": "Required for Linux app to represent runtime stack in the format of 'runtime|runtimeVersion'. For example: 'python|3.9'"
       }
     },
     "packageUri": {
       "type": "string",
+      "defaultValue": "https://github.com/vu-socprime/testfuncapp/raw/main/funcapp.zip",
       "metadata": {
         "description": "The zip content url."
       }
+    },
+    "AWS_AccessKeyId": {
+      "type": "string"
+    },
+    "AWS_SecretAccessKey": {
+      "type": "securestring"
     }
   },
   "variables": {
@@ -142,6 +150,14 @@
             {
               "name": "WEBSITE_RUN_FROM_PACKAGE",
               "value": "[parameters('packageUri')]"
+            },
+            {
+              "name": "AWS_AccessKeyId",
+              "value": "[parameters('AWS_AccessKeyId')]"
+            },
+            {
+              "name": "AWS_SecretAccessKey",
+              "value": "[parameters('AWS_SecretAccessKey')]"
             }
           ]    
         }
