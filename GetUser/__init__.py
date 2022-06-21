@@ -1,4 +1,5 @@
 import os
+import json
 import azure.functions as func
 import boto3
 from botocore.exceptions import ClientError
@@ -15,9 +16,12 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
             )
             try:
                 response = iam.get_user(UserName=username)
+                response["User"]["CreateDate"] = response["User"][
+                    "CreateDate"
+                ].isoformat()
             except iam.exceptions.NoSuchEntityException as err:
                 return func.HttpResponse(str(err), status_code=404)
-            return func.HttpResponse(str(response["User"]), status_code=200)
+            return func.HttpResponse(json.dumps(response["User"]), status_code=200)
         except ClientError as err:
             return func.HttpResponse(str(err), status_code=401)
     else:
