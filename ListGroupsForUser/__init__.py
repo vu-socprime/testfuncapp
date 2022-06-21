@@ -1,4 +1,5 @@
 import os
+import json
 import azure.functions as func
 import boto3
 from botocore.exceptions import ClientError
@@ -22,9 +23,11 @@ def main(req: func.HttpRequest) -> func.HttpResponse:
                 response_list = [
                     response for sublist in response_list for response in sublist
                 ]
+                for group in response_list:
+                    group["CreateDate"] = group["CreateDate"].isoformat()
             except iam.exceptions.NoSuchEntityException as err:
                 return func.HttpResponse(str(err), status_code=404)
-            return func.HttpResponse(str(response_list), status_code=200)
+            return func.HttpResponse(json.dumps(response_list), status_code=200)
         except ClientError as err:
             return func.HttpResponse(str(err), status_code=401)
     else:
